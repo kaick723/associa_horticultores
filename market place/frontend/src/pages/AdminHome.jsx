@@ -7,7 +7,7 @@ function AdminHome() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Todas");
 
-  const apiUrl = "http://localhost:3000";
+  const apiUrl = "https://associacao-horticultores.onrender.com";
 
   useEffect(() => {
     const fetchProducts = async () => {
