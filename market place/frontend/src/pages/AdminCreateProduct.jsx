@@ -12,7 +12,7 @@ function AdminCreateProduct() {
   });
 
   const navigate = useNavigate();
-  const apiUrl = "http://localhost:3000";
+  const apiUrl = "https://associacao-horticultores.onrender.com";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
