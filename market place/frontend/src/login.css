@@ -1,0 +1,82 @@
+/* Tela de login ocupa a tela inteira */
+.login-page {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8fff8;
+  margin: 0;
+  padding: 0;
+}
+
+/* Evita que o navegador force um modo escuro automático */
+:root {
+  color-scheme: light;
+}
+
+/* Formulário centralizado */
+.login-form {
+  background-color: #2f4f2f;
+  color: white;
+  padding: 40px 30px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* espaço entre título, erro e formulário */
+  box-sizing: border-box;
+}
+
+/* Form interno */
+.login-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* espaçamento entre inputs e botão */
+}
+
+.login-form h2 {
+  text-align: center;
+  margin: 0 0 15px 0;
+}
+
+.login-form input {
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login-form input {
+  background-color: #ffffff;
+  color: #111111;
+}
+
+.login-form input::placeholder {
+  color: #777777;
+}
+
+.login-form button {
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  background-color: #3e6b3e;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.login-form button:hover {
+  background-color: #2f4f2f;
+}
+
+.error {
+  color: #ff6b6b;
+  text-align: center;
+  margin: 0;
+  font-weight: bold;
+}

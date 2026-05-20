@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="title">
+  <title>Associação dos Horticultores</title>
+  <rect width="120" height="120" rx="24" fill="#2f4f2f" />
+  <path d="M60 24c13 0 24 11 24 24s-11 24-24 24-24-11-24-24 11-24 24-24z" fill="#90ee90" />
+  <path d="M60 42c8.8 0 16 7.2 16 16s-7.2 16-16 16-16-7.2-16-16 7.2-16 16-16z" fill="#fff" />
+  <path d="M35 89c5-10 15-16 25-16s20 6 25 16" stroke="#90ee90" stroke-width="8" fill="none" stroke-linecap="round" />
+</svg>

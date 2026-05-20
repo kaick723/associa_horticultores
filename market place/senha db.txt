@@ -1,0 +1,5 @@
+kaickbr123_db_user
+U0mFgL2rNMOI7g2j
+
+
+mongodb+srv://kaickbr123_db_user:U0mFgL2rNMOI7g2j@cluster-agro.sljtu22.mongodb.net/agrodb?retryWrites=true&w=majority
