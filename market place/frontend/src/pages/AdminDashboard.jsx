@@ -4,7 +4,7 @@ import "../App.css";
 
 function AdminDashboard() {
   const [products, setProducts] = useState([]);
-  const apiUrl = "http://localhost:3000";
+  const apiUrl = "https://associacao-horticultores.onrender.com";
 
   useEffect(() => {
     const fetchProducts = async () => {
