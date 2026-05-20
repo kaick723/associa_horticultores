@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 function ProductDetails({ productId }) {
   const [product, setProduct] = useState(null);
-  const apiUrl = "http://localhost:3000";
+  const apiUrl = "https://associacao-horticultores.onrender.com";
   const params = useParams();
 
   useEffect(() => {
