@@ -3,14 +3,7 @@ import Login from "./login";
 import "./App.css";
 import ProductDetails from "./pages/ProductDetails";
 
-function App() {
-  const currentPath =
-  typeof window !== "undefined"
-    ? window.location.pathname
-    : "/";
-
-const [adminLogged, setAdminLogged] = useState(
-  currentPath === "/admin"
+const [adminLogged, setAdminLogged] = useState(false);
 );
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
