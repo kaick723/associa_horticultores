@@ -1,23 +1,24 @@
 import { useState, useEffect } from "react";
 import Login from "./login";
 import "./App.css";
-import ProductDetails from "./pages/ProductDetails";
 
-const [adminLogged, setAdminLogged] = useState(false);
-);
+function App() {
+  const [adminLogged, setAdminLogged] = useState(false);
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Todas");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
 
-  // produto selecionado
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
 
-  // editar
   const [editingProduct, setEditingProduct] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
+
+  const apiUrl =
+    import.meta.env.VITE_API_BASE ||
+    "https://associacao-horticultores.onrender.com";
 
   const [newProduct, setNewProduct] = useState({
     name: "",
@@ -37,11 +38,7 @@ const apiUrl =
   import.meta.env.VITE_API_BASE ||
   "http://localhost:3000";
 
-  // se a rota é /product/:id mostramos a página pública de detalhe
-  if (currentPath.startsWith("/product/")) {
-    const id = currentPath.split("/").pop();
-    return <ProductDetails productId={id} />;
-  }
+
 
   // ================== FETCH ==================
   useEffect(() => {
