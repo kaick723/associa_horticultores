@@ -34,10 +34,6 @@ function App() {
   const [orders, setOrders] = useState([]);
   const [showOrders, setShowOrders] = useState(false);
 
-const apiUrl =
-  import.meta.env.VITE_API_BASE ||
-  "http://localhost:3000";
-
 
 
   // ================== FETCH ==================
