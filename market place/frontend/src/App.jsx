@@ -45,7 +45,6 @@ const apiUrl =
   "http://localhost:3000";
 
   // se a rota é /product/:id mostramos a página pública de detalhe
-  const currentPath = typeof window !== 'undefined' ? window.location.pathname : "/";
   if (currentPath.startsWith("/product/")) {
     const id = currentPath.split("/").pop();
     return <ProductDetails productId={id} />;
