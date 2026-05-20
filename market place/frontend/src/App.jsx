@@ -4,7 +4,14 @@ import "./App.css";
 import ProductDetails from "./pages/ProductDetails";
 
 function App() {
-  const [adminLogged, setAdminLogged] = useState(false);
+  const currentPath =
+  typeof window !== "undefined"
+    ? window.location.pathname
+    : "/";
+
+const [adminLogged, setAdminLogged] = useState(
+  currentPath === "/admin"
+);
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Todas");
