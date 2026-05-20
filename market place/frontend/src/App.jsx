@@ -33,7 +33,9 @@ function App() {
   const [orders, setOrders] = useState([]);
   const [showOrders, setShowOrders] = useState(false);
 
-  const apiUrl = "http://localhost:3000";
+const apiUrl =
+  import.meta.env.VITE_API_BASE ||
+  "http://localhost:3000";
 
   // se a rota é /product/:id mostramos a página pública de detalhe
   const currentPath = typeof window !== 'undefined' ? window.location.pathname : "/";
