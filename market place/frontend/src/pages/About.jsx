@@ -96,8 +96,9 @@ export default function About() {
     src={batataImg}
     alt="Batatas"
     style={{
-      width: "100%",
-      maxWidth: "400px",
+      width: "400px",
+      height: "300px",
+      objectFit: "cover",
       borderRadius: "12px"
     }}
   />
@@ -106,8 +107,9 @@ export default function About() {
     src={colherImg}
     alt="Horticultura"
     style={{
-      width: "100%",
-      maxWidth: "400px",
+      width: "400px",
+      height: "300px",
+      objectFit: "cover",
       borderRadius: "12px"
     }}
   />
