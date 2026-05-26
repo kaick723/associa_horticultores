@@ -83,36 +83,55 @@ export default function About() {
         </section>
       </div>
 
-     <div
+<div
   style={{
     display: "flex",
     gap: "20px",
     justifyContent: "center",
+    alignItems: "center",
     flexWrap: "wrap",
     marginTop: "30px"
   }}
 >
-  <img
-    src={batataImg}
-    alt="Batatas"
+  <div
     style={{
-      width: "400px",
+      width: "420px",
       height: "300px",
-      objectFit: "cover",
-      borderRadius: "12px"
+      overflow: "hidden",
+      borderRadius: "12px",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
     }}
-  />
+  >
+    <img
+      src={batataImg}
+      alt="Batatas"
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "cover"
+      }}
+    />
+  </div>
 
-  <img
-    src={colherImg}
-    alt="Horticultura"
+  <div
     style={{
-      width: "400px",
+      width: "420px",
       height: "300px",
-      objectFit: "cover",
-      borderRadius: "12px"
+      overflow: "hidden",
+      borderRadius: "12px",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
     }}
-  />
+  >
+    <img
+      src={colherImg}
+      alt="Horticultura"
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "cover"
+      }}
+    />
+  </div>
 </div>
 
       <div style={{ textAlign: "center", marginTop: 40, paddingTop: 24, borderTop: "1px solid #ddd" }}>
