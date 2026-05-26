@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import batataImg from '../assets/batatas.png';
+import colherImg from '../assets/colher.jpeg';
 
 export default function About() {
   return (
@@ -82,7 +83,35 @@ export default function About() {
         </section>
       </div>
 
-      <img src={batataImg} alt="Sobre nós" style={{ width: "100%",  maxWidth: "500px", borderRadius: "12px"}}/>
+     <div
+  style={{
+    display: "flex",
+    gap: "20px",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    marginTop: "30px"
+  }}
+>
+  <img
+    src={batataImg}
+    alt="Batatas"
+    style={{
+      width: "100%",
+      maxWidth: "400px",
+      borderRadius: "12px"
+    }}
+  />
+
+  <img
+    src={colherImg}
+    alt="Horticultura"
+    style={{
+      width: "100%",
+      maxWidth: "400px",
+      borderRadius: "12px"
+    }}
+  />
+</div>
 
       <div style={{ textAlign: "center", marginTop: 40, paddingTop: 24, borderTop: "1px solid #ddd" }}>
         <Link to="/" className="btn btn-success" style={{ marginRight: 12 }}>
