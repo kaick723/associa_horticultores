@@ -19,7 +19,7 @@ export default function About() {
           </h2>
           <p>
             A <strong>Associação dos Horticultores</strong> nasceu de uma necessidade real: os agricultores 
-            familiares do Sul da Bahia que toda quinta-feira trazem suas produções de alimentos e materiais 
+            familiares de Itapé - BA que toda quinta-feira trazem suas produções de alimentos e materiais 
             agrícolas para a cidade de Itabuna não tinham um espaço digital adequado para comercializar seus produtos.
           </p>
           <p>
@@ -35,7 +35,7 @@ export default function About() {
             Nossa Missão
           </h2>
           <p>
-            Nossa missão é <strong>conectar</strong> os produtores horticultores do Sul da Bahia aos consumidores 
+            Nossa missão é <strong>conectar</strong> os produtores horticultores de Itapé aos consumidores 
             e comerciantes de Itabuna e região, promovendo o desenvolvimento sustentável da agricultura familiar 
             e facilitando o acesso a produtos frescos e de qualidade.
           </p>
