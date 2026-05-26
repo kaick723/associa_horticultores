@@ -8,7 +8,7 @@ export default function About() {
           Associação dos Horticultores
         </h1>
         <p style={{ fontSize: "1.2rem", color: "#555" }}>
-          Conectando horticultores do Sul da Bahia ao mercado
+          Conectando horticultores de Itapé ao mercado
         </p>
       </div>
 
