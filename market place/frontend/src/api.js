@@ -1,4 +1,4 @@
-export const API_BASE = 'https://associacao-horticultores.onrender.com';
+export const API_BASE = 'https://associa-horticultores-backend.onrender.com';
 
 export async function apiFetch(path, opts){
   const url = API_BASE + path;
