@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import batataImg from '../assets/batata.jpeg';
 
 export default function About() {
   return (
@@ -80,6 +81,16 @@ export default function About() {
           </p>
         </section>
       </div>
+
+      <img
+          src={batataImg}
+           alt="Sobre nós"
+          style={{
+           width: "100%",
+           maxWidth: "500px",
+           borderRadius: "12px"
+          }}
+          />
 
       <div style={{ textAlign: "center", marginTop: 40, paddingTop: 24, borderTop: "1px solid #ddd" }}>
         <Link to="/" className="btn btn-success" style={{ marginRight: 12 }}>
