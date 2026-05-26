@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import batataImg from '../assets/batatas.jpeg';
+import batataImg from '../assets/batatas.png';
 
 export default function About() {
   return (
