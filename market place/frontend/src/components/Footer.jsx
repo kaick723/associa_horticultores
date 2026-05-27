@@ -104,10 +104,7 @@ export default function Footer() {
                 📝 Termos de Uso
               </Link>
             </li>
-            <li>
-              <Link to="/cancellation" style={{ color: "white", textDecoration: "none" }}>
-                ↩️ Política de Troca e Devolução
-              </Link>
+            
             </li>
           </ul>
         </div>
