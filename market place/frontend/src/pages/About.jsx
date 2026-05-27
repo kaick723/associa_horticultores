@@ -102,7 +102,7 @@ export default function About() {
             Nossos Valores
           </h2>
           <ul style={{ paddingLeft: 20 }}>
-            <li style={{ marginBottom: 8 }}><strong>Valorização do produtor local:</strong> Priorizamos os horticultores da região Sul da Bahia</li>
+            <li style={{ marginBottom: 8 }}><strong>Valorização do produtor local:</strong> Priorizamos os horticultores da região de Itapé</li>
             <li style={{ marginBottom: 8 }}><strong>Qualidade:</strong> Promovemos produtos frescos e de excelência</li>
             <li style={{ marginBottom: 8 }}><strong>Sustentabilidade:</strong> Apoiamos a agricultura familiar e sustentável</li>
             <li style={{ marginBottom: 8 }}><strong>Transparência:</strong> Garantimos relações comerciais justas e seguras</li>
