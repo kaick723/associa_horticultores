@@ -80,7 +80,6 @@ export default function Root() {
           <Route path="/about" element={<About />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
-          <Route path="/cancellation" element={<Cancellation />} />
           <Route path="/my-orders" element={<MyOrders />} />
           <Route path="/admin/*" element={<App />} />
         </Routes>
