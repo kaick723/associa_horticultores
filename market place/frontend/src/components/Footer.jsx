@@ -25,7 +25,7 @@ export default function Footer() {
           </h3>
           <p style={{ lineHeight: 1.6, fontSize: "0.95rem", opacity: 0.9 }}>
             A Associação dos Horticultores do Sul da Bahia conecta produtores locais 
-            de hortaliças, frutas, flores e materiais agrícolas aos consumidores de Itabuna e região.
+            de hortaliças, frutas, flores e materiais agrícolas aos consumidores de Itapé.
           </p>
           <Link 
             to="/about" 
