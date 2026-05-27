@@ -14,6 +14,44 @@ export default function About() {
         </p>
       </div>
 
+      <section style={{ marginBottom: 32 }}>
+  <h2
+    style={{
+      color: "#2f4f2f",
+      borderBottom: "2px solid #4a7c59",
+      paddingBottom: 8,
+      marginBottom: 16,
+    }}
+  >
+    Conheça Nossa História
+  </h2>
+
+  <div
+    style={{
+      position: "relative",
+      paddingBottom: "56.25%",
+      height: 0,
+      overflow: "hidden",
+      borderRadius: "12px",
+    }}
+  >
+    <iframe
+      src="https://www.youtube.com/embed/ID_DO_VIDEO"
+      title="Vídeo Associação dos Horticultores"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        border: "none",
+        borderRadius: "12px",
+      }}
+    ></iframe>
+  </div>
+</section>
       <div style={{ lineHeight: 1.8, fontSize: "1.05rem", color: "#333" }}>
         <section style={{ marginBottom: 32 }}>
           <h2 style={{ color: "#2f4f2f", borderBottom: "2px solid #4a7c59", paddingBottom: 8, marginBottom: 16 }}>
