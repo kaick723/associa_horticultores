@@ -36,7 +36,7 @@ export default function About() {
     }}
   >
     <iframe
-      src="https://youtu.be/L4lWAPP0O3c"
+      src="https://youtu.be/embed/L4lWAPP0O3c"
       title="Vídeo Associação dos Horticultores"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowFullScreen
