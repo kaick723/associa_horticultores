@@ -12,7 +12,6 @@ import Login from './pages/Login';
 import About from './pages/About';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
-import Cancellation from './pages/Cancellation';
 import Footer from './components/Footer';
 import MyOrders from './pages/MyOrders';
 
