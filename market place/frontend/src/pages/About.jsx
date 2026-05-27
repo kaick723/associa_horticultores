@@ -22,7 +22,7 @@ export default function About() {
           <p>
             A <strong>Associação dos Horticultores</strong> nasceu de uma necessidade real: os agricultores 
             familiares de Itapé - BA que toda quinta-feira trazem suas produções de alimentos e materiais 
-            agrícolas para a cidade de Itabuna não tinham um espaço digital adequado para comercializar seus produtos.
+            agrícolas não tinham um espaço digital adequado para comercializar seus produtos.
           </p>
           <p>
             Pensando nessa demanda, desenvolvemos este <strong>marketplace</strong> para facilitar e modernizar 
@@ -45,10 +45,10 @@ export default function About() {
 
         <section style={{ marginBottom: 32 }}>
           <h2 style={{ color: "#2f4f2f", borderBottom: "2px solid #4a7c59", paddingBottom: 8, marginBottom: 16 }}>
-            O Mercado de Quinta-feira em Itabuna
+            O Mercado de Quinta-feira 
           </h2>
           <p>
-            Todo jueves, dezenas de horticultores das cidades vizinhas se deslocam até Itabuna para vender 
+            Todo jueves, dezenas de horticultores das cidades vizinhas se deslocam para vender 
             suas produções. Este tradicional mercado de jueves é fundamental para a economia local e para 
             a segurança alimentar da região.
           </p>
@@ -76,7 +76,7 @@ export default function About() {
             Venha Conhecer!
           </h2>
           <p>
-            Somos parceiros dos horticultores que toda quinta-feira estão presentes no mercado de Itabuna. 
+            Somos parceiros dos horticultores que toda quinta-feira estão presentes no mercado. 
             Compre produtos frescos, apoiar a agricultura local e conheça de perto o trabalho dos nossos 
             produtores!
           </p>
