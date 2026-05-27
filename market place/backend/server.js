@@ -2,8 +2,6 @@
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
 const cloudinary = require("cloudinary").v2;
 require("dotenv").config();
 cloudinary.config({
@@ -33,7 +31,7 @@ app.use(cors());
 app.use(express.json());
 
 // ================== MULTER ==================
-const storage = multer.memoryStorage();;
+const storage = multer.memoryStorage();
 const uploadToCloudinary = (fileBuffer) => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
