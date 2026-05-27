@@ -131,14 +131,23 @@ function App() {
 
   // ================== EDITAR ==================
   const handleEditProduct = (product) => {
-    setEditingProduct({
-      ...product,
-      previews: product.images || [],
-      images: [],
-    });
-    setShowEditForm(true);
-    setShowCreateForm(false);
-  };
+  const existingImages =
+    product.images?.length > 0
+      ? product.images
+      : product.mainImage
+      ? [product.mainImage]
+      : [];
+
+  setEditingProduct({
+    ...product,
+    previews: existingImages,
+    existingImages,
+    images: [],
+  });
+
+  setShowEditForm(true);
+  setShowCreateForm(false);
+};
 
 const handleUpdateProduct = async (e) => {
   e.preventDefault();
