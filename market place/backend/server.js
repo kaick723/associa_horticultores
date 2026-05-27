@@ -4,7 +4,13 @@ const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const cloudinary = require("cloudinary").v2;
 require("dotenv").config();
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 require("./db"); // conecta ao MongoDB
 
 const Product = require("./models/product");
@@ -26,29 +32,24 @@ app.use(cors());
 
 app.use(express.json());
 
-// ================== GARANTE PASTA UPLOADS ==================
-const uploadDir = path.join(__dirname, "uploads");
+// ================== MULTER ==================
+const storage = multer.memoryStorage();;
+const uploadToCloudinary = (fileBuffer) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: "horticultores",
+      },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result.secure_url);
+      }
+    );
 
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
+    stream.end(fileBuffer);
+  });
+};
 
-// ================== MULTER (UPLOAD) ==================
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
-  },
-
-  filename: function (req, file, cb) {
-    const uniqueName =
-      Date.now() +
-      "-" +
-      Math.round(Math.random() * 1e9) +
-      path.extname(file.originalname);
-
-    cb(null, uniqueName);
-  },
-});
 
 // ✅ filtro de imagem
 const fileFilter = (req, file, cb) => {
@@ -68,8 +69,6 @@ const upload = multer({
   },
 });
 
-// 🔥 SERVIR IMAGENS
-app.use("/uploads", express.static(uploadDir));
 
 // ------------------- Rota raiz ------------------- //
 app.get("/", (req, res) => {
@@ -86,10 +85,13 @@ app.use("/api/auth", authRoutes);
 // ✅ CRIAR PRODUTO
 app.post("/products", upload.array("images", 5), async (req, res) => {
   try {
-    const imagePaths =
-      req.files?.map(
-        (file) => `${BASE_URL}/uploads/${file.filename}`
-      ) || [];
+    const imagePaths = req.files?.length
+  ? await Promise.all(
+      req.files.map((file) =>
+        uploadToCloudinary(file.buffer)
+      )
+    )
+  : [];
 
     const product = new Product({
       name: req.body.name,
@@ -165,9 +167,11 @@ app.put("/products/:id", upload.array("images", 5), async (req, res) => {
     let newImages = product.images || [];
 
     if (req.files && req.files.length > 0) {
-      const uploadedImages = req.files.map(
-        (file) => `${BASE_URL}/uploads/${file.filename}`
-      );
+      const uploadedImages = await Promise.all(
+  req.files.map((file) =>
+    uploadToCloudinary(file.buffer)
+  )
+);
 
       newImages = [...newImages, ...uploadedImages];
     }
