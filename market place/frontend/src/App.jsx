@@ -417,7 +417,7 @@ const handleUpdateProduct = async (e) => {
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                 {editingProduct.previews?.map((src, i) => (
                   <div key={i} className="img-preview">
-                    <img src={src} alt="preview" />
+                    <img src={src} alt="preview" onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/120x120?text=Sem+Imagem";}}/>
                     <button
                       type="button"
                       className="img-remove"
