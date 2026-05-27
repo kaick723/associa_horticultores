@@ -155,6 +155,10 @@ const handleUpdateProduct = async (e) => {
   try {
     const formData = new FormData();
 
+    editingProduct.existingImages?.forEach((img) => {
+  formData.append("imagesToKeep", img);
+});
+
     formData.append("name", editingProduct.name);
     formData.append("description", editingProduct.description);
     formData.append("price", parseFloat(editingProduct.price));
@@ -206,12 +210,18 @@ const handleUpdateProduct = async (e) => {
   };
 
   const removeEditImage = (index) => {
-    setEditingProduct((prev) => ({
+  setEditingProduct((prev) => {
+    const updatedPreviews = prev.previews.filter((_, i) => i !== index);
+
+    return {
       ...prev,
-      images: prev.images.filter((_, i) => i !== index),
-      previews: prev.previews.filter((_, i) => i !== index),
-    }));
-  };
+      previews: updatedPreviews,
+      existingImages: updatedPreviews.filter((img) =>
+        typeof img === "string" && img.startsWith("http")
+      ),
+    };
+  });
+};
 
   // ================== MULTI-IMAGEM ==================
   const handleImageChange = (e) => {
