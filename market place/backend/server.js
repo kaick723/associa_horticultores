@@ -166,6 +166,12 @@ app.put("/products/:id", upload.array("images", 5), async (req, res) => {
     // ================== NOVAS IMAGENS ==================
     let newImages = product.images || [];
 
+    if (req.body.imagesToKeep) {
+  newImages = Array.isArray(req.body.imagesToKeep)
+    ? req.body.imagesToKeep
+    : [req.body.imagesToKeep];
+}
+    
     if (req.files && req.files.length > 0) {
       const uploadedImages = await Promise.all(
   req.files.map((file) =>
