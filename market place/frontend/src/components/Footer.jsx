@@ -104,8 +104,6 @@ export default function Footer() {
                 📝 Termos de Uso
               </Link>
             </li>
-            
-            </li>
           </ul>
         </div>
       </div>
