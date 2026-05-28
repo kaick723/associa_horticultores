@@ -75,7 +75,7 @@ export default function Footer() {
             Contato
           </h3>
           <ul style={{ listStyle: "none", padding: 0, lineHeight: 2 }}>
-            <li>📍 <strong>Local:</strong> Mercado de Quinta-feira, Itabuna-BA</li>
+            <li>📍 <strong>Local:</strong> Mercado de Quinta-feira, Itapé-BA</li>
             <li>📧 <strong>Email:</strong> contato@horticultores.com.br</li>
             <li>📱 <strong>WhatsApp:</strong> (73) 99999-9999</li>
             <li>📅 <strong>Funcionamento:</strong> Quinta-feira (presencial)</li>
