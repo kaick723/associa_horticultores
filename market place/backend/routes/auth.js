@@ -116,7 +116,7 @@ router.post('/forgot-password', async (req, res) => {
     const resetUrl = `${frontendUrl}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
 
     await resend.emails.send({
-      from: 'Associação dos Horticultores <onboarding@resend.dev>',
+      from: 'Associação dos Horticultores <noreply@xn--associaodoshorticultores-69b7h.com.br>',
       to: email,
       subject: 'Redefinição de senha',
       html: `
