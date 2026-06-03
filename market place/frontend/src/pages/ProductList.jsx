@@ -39,6 +39,7 @@ const addToCart = (p) => {
   }
 
   localStorage.setItem("cart", JSON.stringify(cart));
+  window.dispatchEvent(new Event("cartUpdated"));
   alert("Adicionado ao carrinho");
 };
 
