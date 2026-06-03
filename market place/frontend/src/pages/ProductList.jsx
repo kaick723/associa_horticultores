@@ -21,21 +21,26 @@ export default function ProductList() {
     (category === "Todas" || (p.category || "Outros") === category)
   ));
 
-  const addToCart = (p) => {
-    const user = JSON.parse(localStorage.getItem('user') || 'null');
-    if(!user || !user.address){
-      // store pending and open signup modal
-      localStorage.setItem('pendingAdd', JSON.stringify(p));
-      window.dispatchEvent(new Event('open-signup'));
-      return;
-    }
+const addToCart = (p) => {
+  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
-    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-    const idx = cart.findIndex(i => i.id === p._id);
-    if (idx >= 0) cart[idx].qty += 1; else cart.push({ id: p._id, name: p.name, price: p.price, qty: 1, image: p.mainImage });
-    localStorage.setItem("cart", JSON.stringify(cart));
-    alert("Adicionado ao carrinho");
+  const idx = cart.findIndex((i) => i.id === p._id);
+
+  if (idx >= 0) {
+    cart[idx].qty += 1;
+  } else {
+    cart.push({
+      id: p._id,
+      name: p.name,
+      price: p.price,
+      qty: 1,
+      image: p.mainImage || p.images?.[0],
+    });
   }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  alert("Adicionado ao carrinho");
+};
 
   return (
     <div style={{ maxWidth: 1200, margin: "18px auto", padding: 12 }}>
