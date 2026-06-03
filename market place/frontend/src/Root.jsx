@@ -83,18 +83,20 @@ useEffect(() => {
   <span
     style={{
       position: "absolute",
-      top: "-8px",
-      right: "-8px",
-      background: "red",
-      color: "white",
-      borderRadius: "50%",
-      minWidth: "20px",
-      height: "20px",
+      top: "-10px",
+      right: "-10px",
+      background: "#dc3545",
+      color: "#fff",
+      borderRadius: "999px",
+      minWidth: "22px",
+      height: "22px",
       fontSize: "12px",
-      display: "flex",
+      display: "inline-flex",
       alignItems: "center",
       justifyContent: "center",
-      fontWeight: "bold"
+      fontWeight: "700",
+      zIndex: 9999,
+      border: "2px solid white"
     }}
   >
     {cartCount}
