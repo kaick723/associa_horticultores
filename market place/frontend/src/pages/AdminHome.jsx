@@ -33,15 +33,7 @@ function AdminHome() {
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
-        <h3>Categorias</h3>
-        <button onClick={() => setCategory("Todas")}>Todas</button>
-        <button onClick={() => setCategory("Hortaliças")}>Hortaliças</button>
-        <button onClick={() => setCategory("Frutas")}>Frutas</button>
-        <button onClick={() => setCategory("Flores")}>Flores</button>
-        <button onClick={() => setCategory("Sementes")}>Sementes</button>
-        <button onClick={() => setCategory("Fertilizantes")}>Fertilizantes</button>
-        <button onClick={() => setCategory("Ferramentas")}>Ferramentas</button>
-        <button onClick={() => setCategory("Vasos")}>Vasos</button>
+       
         <Link to="/admin/create">
           <button className="btn-create">Cadastrar Produto</button>
         </Link>
