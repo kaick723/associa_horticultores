@@ -80,26 +80,26 @@ useEffect(() => {
   </svg>
 
   {cartCount > 0 && (
-    <span
-      style={{
-        position: "absolute",
-        top: "-8px",
-        right: "-8px",
-        background: "red",
-        color: "white",
-        borderRadius: "50%",
-        minWidth: "20px",
-        height: "20px",
-        fontSize: "12px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontWeight: "bold"
-      }}
-    >
-      {cartCount}
-    </span>
-  )}
+  <span
+    style={{
+      position: "absolute",
+      top: "-8px",
+      right: "-8px",
+      background: "red",
+      color: "white",
+      borderRadius: "50%",
+      minWidth: "20px",
+      height: "20px",
+      fontSize: "12px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontWeight: "bold"
+    }}
+  >
+    {cartCount}
+  </span>
+)}
 </Link>
 
             {user ? (
