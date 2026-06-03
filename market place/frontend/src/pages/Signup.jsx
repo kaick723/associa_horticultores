@@ -21,10 +21,25 @@ export default function Signup(props){
       setLoadingCep(true);
       const res = await fetch(`https://viacep.com.br/ws/${onlyDigits}/json/`);
       const data = await res.json();
-      if(data && !data.erro){
-        const full = `${data.logradouro || ''} ${data.complemento || ''} ${data.bairro || ''} ${data.localidade || ''} - ${data.uf || ''}`.replace(/\s+/g,' ').trim();
-        setAddress(full);
-      }
+      if (data && !data.erro) {
+  const cidade = (data.localidade || '').toLowerCase();
+  const uf = (data.uf || '').toUpperCase();
+
+  if (cidade !== 'itapé' || uf !== 'BA') {
+    setAddress('');
+    setCep('');
+    setError('Atendemos apenas CEPs de Itapé-BA.');
+    return;
+  }
+
+  setError('');
+
+  const full = `${data.logradouro || ''} ${data.complemento || ''} ${data.bairro || ''} ${data.localidade || ''} - ${data.uf || ''}`
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  setAddress(full);
+}
     }catch(e){
       console.warn('CEP lookup failed', e);
     }finally{ setLoadingCep(false); }
