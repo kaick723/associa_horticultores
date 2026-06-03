@@ -49,6 +49,9 @@ export default function Signup(props){
     e.preventDefault();
     setError('');
     if(password !== confirm) return setError('Senhas não conferem');
+    if (!address.toLowerCase().includes('itapé') || !address.toUpperCase().includes('BA')) {
+  return setError('Só é permitido cadastro com endereço de Itapé-BA.');
+}
     try{
       const res = await apiFetch('/api/auth/signup', { method: 'POST', body: { name, email, password, cep, address, number } });
       if(!res.ok){
