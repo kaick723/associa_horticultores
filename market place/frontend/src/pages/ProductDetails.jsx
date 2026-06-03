@@ -54,7 +54,7 @@ function ProductDetails({ productId }) {
 
           <div style={{ display: "flex", gap: 12 }}>
             <button className="btn btn-success" onClick={addToCart}>Adicionar ao carrinho</button>
-            <button className="btn btn-outline-secondary" onClick={() => window.history.back()}>Voltar</button>
+            <button className="btn btn-outline-secondary" onClick={() => window.location.href = "/"}>Voltar</button>
           </div>
         </div>
       </div>
