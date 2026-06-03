@@ -10,9 +10,10 @@ export default function Cart(){
   },[])
 
   const save = (next) => {
-    setCart(next);
-    localStorage.setItem('cart', JSON.stringify(next));
-  }
+  setCart(next);
+  localStorage.setItem('cart', JSON.stringify(next));
+  window.dispatchEvent(new Event("cartUpdated"));
+}
 
   const changeQty = (i, qty) => {
     const next = [...cart];
