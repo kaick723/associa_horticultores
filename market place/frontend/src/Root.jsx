@@ -18,6 +18,26 @@ import MyOrders from './pages/MyOrders';
 export default function Root() {
   const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user') || 'null'));
 
+  const [cartCount, setCartCount] = useState(0);
+
+const updateCartCount = () => {
+  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+  const count = cart.reduce((sum, item) => sum + Number(item.qty || 0), 0);
+  setCartCount(count);
+};
+
+useEffect(() => {
+  updateCartCount();
+
+  window.addEventListener("storage", updateCartCount);
+  window.addEventListener("cartUpdated", updateCartCount);
+
+  return () => {
+    window.removeEventListener("storage", updateCartCount);
+    window.removeEventListener("cartUpdated", updateCartCount);
+  };
+}, []);
+
   const handleSaveUser = (u)=>{
     setUser(u);
     localStorage.setItem('user', JSON.stringify(u));
@@ -44,12 +64,43 @@ export default function Root() {
           </Link>
           <nav style={{ marginLeft: "auto", display: "flex", gap: 12, alignItems: 'center' }}>
             <Link to="/" className="btn btn-light">Produtos</Link>
-            <Link to="/cart" className="btn btn-light" title="Carrinho" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-              {/* simple cart SVG icon */}
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M0 1a1 1 0 0 1 1-1h1.27a1 1 0 0 1 .97.757L3.89 3H15a1 1 0 0 1 .98 1.197l-1.5 8A1 1 0 0 1 13.5 13H5a1 1 0 0 1-1-.858L3.11 2H1a1 1 0 0 1-1-1zM5.5 14a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm7 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
-              </svg>
-            </Link>
+            <Link
+  to="/cart"
+  className="btn btn-light"
+  title="Carrinho"
+  style={{
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+    position: "relative"
+  }}
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M0 1a1 1 0 0 1 1-1h1.27a1 1 0 0 1 .97.757L3.89 3H15a1 1 0 0 1 .98 1.197l-1.5 8A1 1 0 0 1 13.5 13H5a1 1 0 0 1-1-.858L3.11 2H1a1 1 0 0 1-1-1zM5.5 14a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm7 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
+  </svg>
+
+  {cartCount > 0 && (
+    <span
+      style={{
+        position: "absolute",
+        top: "-8px",
+        right: "-8px",
+        background: "red",
+        color: "white",
+        borderRadius: "50%",
+        minWidth: "20px",
+        height: "20px",
+        fontSize: "12px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontWeight: "bold"
+      }}
+    >
+      {cartCount}
+    </span>
+  )}
+</Link>
 
             {user ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
