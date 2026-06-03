@@ -52,7 +52,11 @@ useEffect(() => {
     }
   }
 
-  const logout = ()=>{ localStorage.removeItem('user'); setUser(null); }
+  const logout = () => {
+  localStorage.removeItem('user');
+  setUser(null);
+  window.location.href = "/";
+};
 
   return (
     <BrowserRouter>
