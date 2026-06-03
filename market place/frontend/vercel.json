@@ -35,6 +35,10 @@
     {
       "source": "/about",
       "destination": "/index.html"
-    }
+    },
+    {
+  "source": "/my-orders",
+  "destination": "/index.html"
+}
   ]
 }
