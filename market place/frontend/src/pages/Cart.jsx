@@ -30,11 +30,13 @@ export default function Cart(){
   const checkout = async () => {
     try {
       const user = JSON.parse(localStorage.getItem('user') || 'null');
-      if(!user || !user.address || !user.number){
-        // request signup/address
-        window.dispatchEvent(new Event('open-signup'));
-        alert('Você precisa criar conta com endereço completo antes de finalizar o pedido');
-        return;
+      if (!user || !user.address || !user.number) {
+  alert("Você precisa entrar ou criar uma conta antes de finalizar o pedido.");
+
+  localStorage.setItem("redirectAfterLogin", "/cart");
+
+  window.location.href = "/login";
+  return;
       }
 
       const { ok, data } = await apiFetch('/api/users/orders', {
