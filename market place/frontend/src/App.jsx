@@ -311,6 +311,19 @@ const handleUpdateProduct = async (e) => {
           </button>
         </div>
         <h1>Admin Dashboard</h1>
+        <button
+  className="btn btn-danger"
+  style={{
+    marginLeft: "auto",
+    marginRight: "15px"
+  }}
+  onClick={() => {
+    localStorage.removeItem("user");
+    window.location.href = "/";
+  }}
+>
+  Sair
+</button>
       </header>
 
       {/* Sidebar */}
