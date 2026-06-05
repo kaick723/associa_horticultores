@@ -21,14 +21,16 @@ function App() {
     "https://associacao-horticultores.onrender.com";
 
   const [newProduct, setNewProduct] = useState({
-    name: "",
-    description: "",
-    price: 0,
-    inStock: true,
-    category: "Hortaliças",
-    images: [],
-    previews: [],
-  });
+  name: "",
+  description: "",
+  price: 0,
+  inStock: true,
+  category: "Hortaliças",
+  quantity: 0,
+  active: true,
+  images: [],
+  previews: [],
+});
 
   // orders
   const [orders, setOrders] = useState([]);
@@ -79,7 +81,9 @@ function App() {
       formData.append("price", parseFloat(newProduct.price));
       formData.append("inStock", newProduct.inStock);
       formData.append("category", newProduct.category);
-
+      formData.append("quantity", newProduct.quantity);
+      formData.append("active", newProduct.active);
+      
       newProduct.images.forEach((img) => {
         formData.append("images", img);
       });
