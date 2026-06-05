@@ -332,12 +332,6 @@ function App() {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        
-        <button onClick={() => setCategory("Ferramentas")}>
-          Ferramentas
-        </button>
-        <button onClick={() => setCategory("Vasos")}>Vasos</button>
-
         <button
           className="btn-create"
           onClick={() => {
