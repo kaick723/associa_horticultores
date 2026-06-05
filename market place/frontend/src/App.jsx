@@ -20,56 +20,62 @@ function App() {
     import.meta.env.VITE_API_BASE ||
     "https://associacao-horticultores.onrender.com";
 
-  const [newProduct, setNewProduct] = useState({
-  name: "",
-  description: "",
-  price: 0,
-  inStock: true,
-  category: "Hortaliças",
-  quantity: 0,
-  active: true,
-  images: [],
-  previews: [],
-});
+  const emptyProduct = {
+    name: "",
+    description: "",
+    price: 0,
+    inStock: true,
+    category: "Hortaliças",
+    quantity: 0,
+    active: true,
+    images: [],
+    previews: [],
+  };
 
-  // orders
+  const [newProduct, setNewProduct] = useState(emptyProduct);
+
   const [orders, setOrders] = useState([]);
   const [showOrders, setShowOrders] = useState(false);
 
+  const statusLabel = {
+    pending: "Pendente",
+    confirmed: "Confirmado",
+    shipped: "Enviado",
+    delivered: "Entregue",
+    cancelled: "Cancelado",
+  };
 
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch(`${apiUrl}/products?admin=true`);
+      const data = await res.json();
+      setProducts(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-  // ================== FETCH ==================
+  const fetchOrders = async () => {
+    try {
+      const res = await fetch(`${apiUrl}/api/admin/orders`);
+      const data = await res.json();
+      setOrders(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch(`${apiUrl}/products`);
-        const data = await res.json();
-        setProducts(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    const fetchOrders = async () => {
-      try {
-        const res = await fetch(`${apiUrl}/api/admin/orders`);
-        const data = await res.json();
-        setOrders(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
     fetchProducts();
     fetchOrders();
   }, []);
 
-  // ================== FILTRO ==================
   const filteredProducts = products.filter(
     (p) =>
       p.name.toLowerCase().includes(search.toLowerCase()) &&
       (category === "Todas" || p.category === category)
   );
 
-  // ================== CRIAR ==================
   const handleCreateProduct = async (e) => {
     e.preventDefault();
 
@@ -81,9 +87,9 @@ function App() {
       formData.append("price", parseFloat(newProduct.price));
       formData.append("inStock", newProduct.inStock);
       formData.append("category", newProduct.category);
-      formData.append("quantity", newProduct.quantity);
+      formData.append("quantity", Number(newProduct.quantity || 0));
       formData.append("active", newProduct.active);
-      
+
       newProduct.images.forEach((img) => {
         formData.append("images", img);
       });
@@ -97,19 +103,7 @@ function App() {
 
       if (res.ok || res.status === 201) {
         setProducts([data, ...products]);
-
-        setNewProduct({
-      name: "",
-      description: "",
-      price: 0,
-      inStock: true,
-      category: "Hortaliças",
-      quantity: 0,
-      active: true,
-      images: [],
-      previews: [],
-      });
-
+        setNewProduct(emptyProduct);
         setShowCreateForm(false);
         alert("Produto criado!");
       } else {
@@ -117,10 +111,10 @@ function App() {
       }
     } catch (err) {
       console.error(err);
+      alert("Erro ao criar produto");
     }
   };
 
-  // ================== DELETE ==================
   const handleDeleteProduct = async (id) => {
     if (!window.confirm("Tem certeza que deseja apagar?")) return;
 
@@ -135,69 +129,70 @@ function App() {
     }
   };
 
-  // ================== EDITAR ==================
   const handleEditProduct = (product) => {
-  const existingImages =
-    product.images?.length > 0
-      ? product.images
-      : product.mainImage
-      ? [product.mainImage]
-      : [];
+    const existingImages =
+      product.images?.length > 0
+        ? product.images
+        : product.mainImage
+        ? [product.mainImage]
+        : [];
 
-  setEditingProduct({
-    ...product,
-    previews: existingImages,
-    existingImages,
-    images: [],
-  });
-
-  setShowEditForm(true);
-  setShowCreateForm(false);
-};
-
-const handleUpdateProduct = async (e) => {
-  e.preventDefault();
-
-  try {
-    const formData = new FormData();
-
-    editingProduct.existingImages?.forEach((img) => {
-  formData.append("imagesToKeep", img);
-});
-
-    formData.append("name", editingProduct.name);
-    formData.append("description", editingProduct.description);
-    formData.append("price", parseFloat(editingProduct.price));
-    formData.append("inStock", editingProduct.inStock);
-    formData.append("category", editingProduct.category);
-
-    editingProduct.images?.forEach((img) => {
-      formData.append("images", img);
+    setEditingProduct({
+      ...product,
+      quantity: product.quantity ?? 0,
+      active: product.active !== false,
+      previews: existingImages,
+      existingImages,
+      images: [],
     });
 
-    const res = await fetch(`${apiUrl}/products/${editingProduct._id}`, {
-      method: "PUT",
-      body: formData,
-    });
+    setShowEditForm(true);
+    setShowCreateForm(false);
+  };
 
-    if (!res.ok) {
-      const err = await res.json();
-      alert(err.error || "Erro ao atualizar");
-      return;
+  const handleUpdateProduct = async (e) => {
+    e.preventDefault();
+
+    try {
+      const formData = new FormData();
+
+      editingProduct.existingImages?.forEach((img) => {
+        formData.append("imagesToKeep", img);
+      });
+
+      formData.append("name", editingProduct.name);
+      formData.append("description", editingProduct.description);
+      formData.append("price", parseFloat(editingProduct.price));
+      formData.append("inStock", editingProduct.inStock);
+      formData.append("category", editingProduct.category);
+      formData.append("quantity", Number(editingProduct.quantity || 0));
+      formData.append("active", editingProduct.active);
+
+      editingProduct.images?.forEach((img) => {
+        formData.append("images", img);
+      });
+
+      const res = await fetch(`${apiUrl}/products/${editingProduct._id}`, {
+        method: "PUT",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.error || "Erro ao atualizar");
+        return;
+      }
+
+      await fetchProducts();
+
+      setShowEditForm(false);
+      setEditingProduct(null);
+      alert("Produto atualizado!");
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao atualizar produto");
     }
-
-    // ✅ BUSCA ATUALIZADA DO BANCO (ESSA LINHA RESOLVE)
-    const refresh = await fetch(`${apiUrl}/products`);
-    const data = await refresh.json();
-    setProducts(data);
-
-    setShowEditForm(false);
-    setEditingProduct(null);
-    alert("Produto atualizado!");
-  } catch (err) {
-    console.error(err);
-  }
-};
+  };
 
   const handleEditImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -216,20 +211,19 @@ const handleUpdateProduct = async (e) => {
   };
 
   const removeEditImage = (index) => {
-  setEditingProduct((prev) => {
-    const updatedPreviews = prev.previews.filter((_, i) => i !== index);
+    setEditingProduct((prev) => {
+      const updatedPreviews = prev.previews.filter((_, i) => i !== index);
 
-    return {
-      ...prev,
-      previews: updatedPreviews,
-      existingImages: updatedPreviews.filter((img) =>
-        typeof img === "string" && img.startsWith("http")
-      ),
-    };
-  });
-};
+      return {
+        ...prev,
+        previews: updatedPreviews,
+        existingImages: updatedPreviews.filter(
+          (img) => typeof img === "string" && img.startsWith("http")
+        ),
+      };
+    });
+  };
 
-  // ================== MULTI-IMAGEM ==================
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
@@ -244,13 +238,6 @@ const handleUpdateProduct = async (e) => {
     }));
 
     e.target.value = null;
-  };
-
-  const navigateToProduct = (p) => {
-    // navega para a rota pública do produto
-    window.history.pushState({}, '', `/product/${p._id}`);
-    // reload simples para forçar render sem router completo
-    window.location.reload();
   };
 
   const removeImage = (index) => {
@@ -282,7 +269,6 @@ const handleUpdateProduct = async (e) => {
 
   return (
     <div className="admin-wrapper">
-      {/* Topbar */}
       <header className="topbar">
         <button
           className="hamburger"
@@ -290,6 +276,7 @@ const handleUpdateProduct = async (e) => {
         >
           ☰
         </button>
+
         <div className="topbar-actions">
           <button
             className="btn-create"
@@ -303,6 +290,7 @@ const handleUpdateProduct = async (e) => {
           >
             Ver Produtos
           </button>
+
           <button
             className="btn-create"
             onClick={() => {
@@ -316,23 +304,24 @@ const handleUpdateProduct = async (e) => {
             Ver Pedidos
           </button>
         </div>
+
         <h1>Admin Dashboard</h1>
+
         <button
-  className="btn btn-danger"
-  style={{
-    marginLeft: "auto",
-    marginRight: "15px"
-  }}
-  onClick={() => {
-    localStorage.removeItem("user");
-    window.location.href = "/";
-  }}
->
-  Sair
-</button>
+          className="btn btn-danger"
+          style={{
+            marginLeft: "auto",
+            marginRight: "15px",
+          }}
+          onClick={() => {
+            setAdminLogged(false);
+            window.location.href = "/";
+          }}
+        >
+          Sair
+        </button>
       </header>
 
-      {/* Sidebar */}
       <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
         <h2>Menu Admin</h2>
 
@@ -357,7 +346,16 @@ const handleUpdateProduct = async (e) => {
         </button>
         <button onClick={() => setCategory("Vasos")}>Vasos</button>
 
-        <button className="btn-create" onClick={() => { setShowOrders(false); setShowCreateForm(false); setShowEditForm(false); setSelectedProduct(null); setSidebarOpen(false); }}>
+        <button
+          className="btn-create"
+          onClick={() => {
+            setShowOrders(false);
+            setShowCreateForm(false);
+            setShowEditForm(false);
+            setSelectedProduct(null);
+            setSidebarOpen(false);
+          }}
+        >
           Ver Produtos
         </button>
 
@@ -365,18 +363,23 @@ const handleUpdateProduct = async (e) => {
           Cadastrar Produto
         </button>
 
-        <button className="btn-create" onClick={() => { setShowOrders(true); setShowCreateForm(false); setShowEditForm(false); setSelectedProduct(null); setSidebarOpen(false); }}>
+        <button
+          className="btn-create"
+          onClick={() => {
+            setShowOrders(true);
+            setShowCreateForm(false);
+            setShowEditForm(false);
+            setSelectedProduct(null);
+            setSidebarOpen(false);
+          }}
+        >
           Ver Pedidos
         </button>
       </aside>
 
-      {/* Modal produto */}
       {selectedProduct && (
         <div className="product-overlay" onClick={closeProduct}>
-          <div
-            className="product-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="product-modal" onClick={(e) => e.stopPropagation()}>
             <button className="close-btn" onClick={closeProduct}>
               ×
             </button>
@@ -412,6 +415,15 @@ const handleUpdateProduct = async (e) => {
                   R$ {Number(selectedProduct.price).toFixed(2)}
                 </p>
                 <p>{selectedProduct.description}</p>
+                <p>
+                  Estoque: <strong>{selectedProduct.quantity ?? 0}</strong>
+                </p>
+                <p>
+                  Status:{" "}
+                  <strong>
+                    {selectedProduct.active === false ? "Inativo" : "Ativo"}
+                  </strong>
+                </p>
                 <p
                   className={
                     selectedProduct.inStock ? "in-stock" : "out-stock"
@@ -427,9 +439,7 @@ const handleUpdateProduct = async (e) => {
         </div>
       )}
 
-      {/* Main */}
       <main className="admin-main">
-        {/* ===== FORM EDITAR ===== */}
         {showEditForm && editingProduct ? (
           <div className="admin-form-container">
             <h2>Editar Produto</h2>
@@ -446,7 +456,14 @@ const handleUpdateProduct = async (e) => {
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                 {editingProduct.previews?.map((src, i) => (
                   <div key={i} className="img-preview">
-                    <img src={src} alt="preview" onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/120x120?text=Sem+Imagem";}}/>
+                    <img
+                      src={src}
+                      alt="preview"
+                      onError={(e) => {
+                        e.currentTarget.src =
+                          "https://via.placeholder.com/120x120?text=Sem+Imagem";
+                      }}
+                    />
                     <button
                       type="button"
                       className="img-remove"
@@ -483,22 +500,6 @@ const handleUpdateProduct = async (e) => {
               />
 
               <label>Preço</label>
-
-              <label>Preço</label>
-<input
-  type="number"
-  value={newProduct.price}
-  onChange={(e) =>
-    setNewProduct({
-      ...newProduct,
-      price: parseFloat(e.target.value),
-    })
-  }
-  min="0"
-  step="0.01"
-  required
-/>
-              
               <input
                 type="number"
                 value={editingProduct.price}
@@ -513,11 +514,50 @@ const handleUpdateProduct = async (e) => {
                 required
               />
 
+              <label>Quantidade em estoque</label>
+              <input
+                type="number"
+                value={editingProduct.quantity ?? 0}
+                onChange={(e) =>
+                  setEditingProduct({
+                    ...editingProduct,
+                    quantity: Number(e.target.value),
+                  })
+                }
+                min="0"
+                required
+              />
+
+              <label>
+                <input
+                  type="checkbox"
+                  checked={editingProduct.active !== false}
+                  onChange={(e) =>
+                    setEditingProduct({
+                      ...editingProduct,
+                      active: e.target.checked,
+                    })
+                  }
+                />{" "}
+                Produto ativo
+              </label>
+
+              <label>
+                <input
+                  type="checkbox"
+                  checked={editingProduct.inStock !== false}
+                  onChange={(e) =>
+                    setEditingProduct({
+                      ...editingProduct,
+                      inStock: e.target.checked,
+                    })
+                  }
+                />{" "}
+                Em estoque
+              </label>
+
               <button type="submit">Salvar</button>
-              <button
-                type="button"
-                onClick={() => setShowEditForm(false)}
-              >
+              <button type="button" onClick={() => setShowEditForm(false)}>
                 Cancelar
               </button>
             </form>
@@ -587,137 +627,123 @@ const handleUpdateProduct = async (e) => {
                 required
               />
 
+              <label>Quantidade em estoque</label>
+              <input
+                type="number"
+                value={newProduct.quantity}
+                onChange={(e) =>
+                  setNewProduct({
+                    ...newProduct,
+                    quantity: Number(e.target.value),
+                  })
+                }
+                min="0"
+                required
+              />
+
+              <label>
+                <input
+                  type="checkbox"
+                  checked={newProduct.active}
+                  onChange={(e) =>
+                    setNewProduct({
+                      ...newProduct,
+                      active: e.target.checked,
+                    })
+                  }
+                />{" "}
+                Produto ativo
+              </label>
+
+              <label>
+                <input
+                  type="checkbox"
+                  checked={newProduct.inStock}
+                  onChange={(e) =>
+                    setNewProduct({
+                      ...newProduct,
+                      inStock: e.target.checked,
+                    })
+                  }
+                />{" "}
+                Em estoque
+              </label>
+
               <button type="submit">Cadastrar</button>
-              <button
-                type="button"
-                onClick={() => setShowCreateForm(false)}
-              >
+              <button type="button" onClick={() => setShowCreateForm(false)}>
                 Cancelar
               </button>
             </form>
           </div>
         ) : showOrders ? (
           <div className="orders-container" style={{ padding: 20 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 20,
+              }}
+            >
               <h2 style={{ margin: 0 }}>Pedidos</h2>
-              <div style={{ display: 'flex', gap: 10 }}>
+
+              <div style={{ display: "flex", gap: 10 }}>
                 <button
                   className="btn btn-primary"
                   onClick={() => {
-                    const printWindow = window.open('', '_blank');
+                    const printWindow = window.open("", "_blank");
                     printWindow.document.write(`
                       <!DOCTYPE html>
                       <html>
                       <head>
-                        <title>Lista de Pedidos - ${new Date().toLocaleDateString('pt-BR')}</title>
+                        <title>Lista de Pedidos - ${new Date().toLocaleDateString("pt-BR")}</title>
                         <style>
-                          body {
-                            font-family: Arial, sans-serif;
-                            font-size: 12px;
-                            line-height: 1.3;
-                            margin: 10px;
-                            color: #333;
-                          }
-                          .header {
-                            text-align: center;
-                            border-bottom: 2px solid #2f4f2f;
-                            padding-bottom: 10px;
-                            margin-bottom: 15px;
-                          }
-                          .header h1 {
-                            color: #2f4f2f;
-                            margin: 0;
-                            font-size: 18px;
-                          }
-                          .order {
-                            border: 1px solid #ddd;
-                            border-radius: 6px;
-                            padding: 8px;
-                            margin-bottom: 10px;
-                            page-break-inside: avoid;
-                            background: #fff;
-                          }
-                          .order-header {
-                            display: flex;
-                            justify-content: space-between;
-                            align-items: center;
-                            margin-bottom: 6px;
-                            border-bottom: 1px solid #eee;
-                            padding-bottom: 4px;
-                          }
-                          .order-number {
-                            font-weight: bold;
-                            color: #2f4f2f;
-                            font-size: 14px;
-                          }
-                          .order-status {
-                            display: inline-block;
-                            padding: 2px 6px;
-                            border-radius: 3px;
-                            font-size: 10px;
-                            font-weight: bold;
-                          }
+                          body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.3; margin: 10px; color: #333; }
+                          .header { text-align: center; border-bottom: 2px solid #2f4f2f; padding-bottom: 10px; margin-bottom: 15px; }
+                          .header h1 { color: #2f4f2f; margin: 0; font-size: 18px; }
+                          .order { border: 1px solid #ddd; border-radius: 6px; padding: 8px; margin-bottom: 10px; page-break-inside: avoid; background: #fff; }
+                          .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
+                          .order-number { font-weight: bold; color: #2f4f2f; font-size: 14px; }
+                          .order-status { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: bold; }
                           .status-pending { background-color: #fff3cd; color: #856404; }
                           .status-confirmed { background-color: #d1ecf1; color: #0c5460; }
                           .status-shipped { background-color: #d4edda; color: #155724; }
                           .status-delivered { background-color: #c3e6cb; color: #155724; }
                           .status-cancelled { background-color: #f8d7da; color: #721c24; }
-                          .customer-info {
-                            margin-bottom: 6px;
-                            font-size: 11px;
-                          }
-                          .address {
-                            margin-bottom: 6px;
-                            font-size: 11px;
-                            font-weight: bold;
-                          }
-                          .items {
-                            font-size: 11px;
-                            margin-bottom: 6px;
-                          }
-                          .items-summary {
-                            background: #f8f9fa;
-                            padding: 4px;
-                            border-radius: 3px;
-                            margin-top: 4px;
-                          }
-                          .total {
-                            text-align: right;
-                            font-weight: bold;
-                            font-size: 13px;
-                            color: #2f4f2f;
-                            border-top: 1px solid #ddd;
-                            padding-top: 4px;
-                          }
-                          .date {
-                            font-size: 10px;
-                            color: #666;
-                            text-align: right;
-                          }
-                          @media print {
-                            body { margin: 0; }
-                            .order { break-inside: avoid; }
-                          }
-                          @page {
-                            size: A4;
-                            margin: 0.5cm;
-                          }
+                          .customer-info { margin-bottom: 6px; font-size: 11px; }
+                          .address { margin-bottom: 6px; font-size: 11px; font-weight: bold; }
+                          .items { font-size: 11px; margin-bottom: 6px; }
+                          .items-summary { background: #f8f9fa; padding: 4px; border-radius: 3px; margin-top: 4px; }
+                          .total { text-align: right; font-weight: bold; font-size: 13px; color: #2f4f2f; border-top: 1px solid #ddd; padding-top: 4px; }
+                          .date { font-size: 10px; color: #666; text-align: right; }
+                          @media print { body { margin: 0; } .order { break-inside: avoid; } }
+                          @page { size: A4; margin: 0.5cm; }
                         </style>
                       </head>
                       <body>
                         <div class="header">
                           <h1>Lista de Pedidos para Entrega</h1>
-                          <p>Gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p>
+                          <p>Gerado em ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</p>
                         </div>
-                        ${orders.filter(order => order.status !== 'delivered').map(order => `
+                        ${orders
+                          .filter((order) => order.status !== "delivered")
+                          .map(
+                            (order) => `
                           <div class="order">
                             <div class="order-header">
                               <span class="order-number">Pedido #${order._id.slice(-6)}</span>
                               <span class="order-status status-${order.status}">
-                                ${order.status === 'pending' ? 'Pendente' : 
-                                  order.status === 'confirmed' ? 'Confirmado' : 
-                                  order.status === 'shipped' ? 'Enviado' : 
-                                  order.status === 'delivered' ? 'Entregue' : 'Cancelado'}
+                                ${
+                                  order.status === "pending"
+                                    ? "Pendente"
+                                    : order.status === "confirmed"
+                                    ? "Confirmado"
+                                    : order.status === "shipped"
+                                    ? "Enviado"
+                                    : order.status === "delivered"
+                                    ? "Entregue"
+                                    : "Cancelado"
+                                }
                               </span>
                             </div>
                             <div class="customer-info">
@@ -731,20 +757,30 @@ const handleUpdateProduct = async (e) => {
                             <div class="items">
                               <strong>Itens:</strong> ${order.items.length} produto(s)
                               <div class="items-summary">
-                                ${order.items.slice(0, 3).map(item => 
-                                  `${item.qty}x ${item.name.length > 30 ? item.name.substring(0, 30) + '...' : item.name}`
-                                ).join(' • ')}
-                                ${order.items.length > 3 ? ` • +${order.items.length - 3} mais` : ''}
+                                ${order.items
+                                  .slice(0, 3)
+                                  .map(
+                                    (item) =>
+                                      `${item.qty}x ${
+                                        item.name.length > 30
+                                          ? item.name.substring(0, 30) + "..."
+                                          : item.name
+                                      }`
+                                  )
+                                  .join(" • ")}
+                                ${order.items.length > 3 ? ` • +${order.items.length - 3} mais` : ""}
                               </div>
                             </div>
                             <div class="total">
                               Total: R$ ${order.total.toFixed(2)}
                             </div>
                             <div class="date">
-                              ${new Date(order.createdAt).toLocaleDateString('pt-BR')}
+                              ${new Date(order.createdAt).toLocaleDateString("pt-BR")}
                             </div>
                           </div>
-                        `).join('')}
+                        `
+                          )
+                          .join("")}
                       </body>
                       </html>
                     `);
@@ -754,121 +790,211 @@ const handleUpdateProduct = async (e) => {
                 >
                   🖨️ Imprimir Todos
                 </button>
-                <button className="btn btn-outline-secondary" onClick={() => setShowOrders(false)}>Voltar</button>
+
+                <button
+                  className="btn btn-outline-secondary"
+                  onClick={() => setShowOrders(false)}
+                >
+                  Voltar
+                </button>
               </div>
             </div>
-            <div className="orders-list" style={{ display: 'grid', gap: 20 }}>
+
+            <div className="orders-list" style={{ display: "grid", gap: 20 }}>
               {orders.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: 40, color: '#666' }}>
+                <div style={{ textAlign: "center", padding: 40, color: "#666" }}>
                   <h4>Nenhum pedido encontrado</h4>
                   <p>Ainda não há pedidos para exibir.</p>
                 </div>
               ) : (
                 orders.map((order) => (
-                  <div key={order._id} className="order-card" style={{
-                    border: '1px solid #ddd',
-                    borderRadius: 8,
-                    padding: 20,
-                    backgroundColor: '#fff',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 15 }}>
+                  <div
+                    key={order._id}
+                    className="order-card"
+                    style={{
+                      border: "1px solid #ddd",
+                      borderRadius: 8,
+                      padding: 20,
+                      backgroundColor: "#fff",
+                      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                        marginBottom: 15,
+                      }}
+                    >
                       <div>
-                        <h3 style={{ margin: 0, color: '#2f4f2f' }}>Pedido #{order._id.slice(-6)}</h3>
-                        <small style={{ color: '#666' }}>
-                          {new Date(order.createdAt).toLocaleDateString('pt-BR')} às {new Date(order.createdAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                        <h3 style={{ margin: 0, color: "#2f4f2f" }}>
+                          Pedido #{order._id.slice(-6)}
+                        </h3>
+                        <small style={{ color: "#666" }}>
+                          {new Date(order.createdAt).toLocaleDateString("pt-BR")} às{" "}
+                          {new Date(order.createdAt).toLocaleTimeString("pt-BR", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
                         </small>
                       </div>
-                      <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: 10 }}>
-                        <div style={{ fontSize: '1.2em', fontWeight: 'bold', color: '#2f4f2f' }}>
+
+                      <div
+                        style={{
+                          textAlign: "right",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 10,
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: "1.2em",
+                            fontWeight: "bold",
+                            color: "#2f4f2f",
+                          }}
+                        >
                           R$ {order.total.toFixed(2)}
                         </div>
-                        <div style={{ display: 'flex', gap: 8 }}>
-                          <select
-                            value={order.status}
-                            onChange={async (e) => {
-                              const nextStatus = e.target.value;
-                              try {
-                                const res = await fetch(`${apiUrl}/api/admin/orders/${order._id}`, {
-                                  method: 'PUT',
-                                  headers: { 'Content-Type': 'application/json' },
-                                  body: JSON.stringify({ status: nextStatus })
-                                });
-                                const data = await res.json();
-                                if (res.ok) {
-                                  setOrders((prev) => prev.map((o) => (o._id === data._id ? data : o)));
-                                } else {
-                                  console.error('Erro ao atualizar status:', data);
-                                  alert('Não foi possível atualizar o status do pedido.');
+
+                        <select
+                          value={order.status}
+                          onChange={async (e) => {
+                            const nextStatus = e.target.value;
+
+                            try {
+                              const res = await fetch(
+                                `${apiUrl}/api/admin/orders/${order._id}`,
+                                {
+                                  method: "PUT",
+                                  headers: { "Content-Type": "application/json" },
+                                  body: JSON.stringify({ status: nextStatus }),
                                 }
-                              } catch (err) {
-                                console.error('Erro na requisição de status:', err);
-                                alert('Erro na comunicação com o servidor.');
+                              );
+
+                              const data = await res.json();
+
+                              if (res.ok) {
+                                setOrders((prev) =>
+                                  prev.map((o) => (o._id === data._id ? data : o))
+                                );
+                              } else {
+                                console.error("Erro ao atualizar status:", data);
+                                alert("Não foi possível atualizar o status do pedido.");
                               }
-                            }}
-                            style={{
-                              padding: '5px 10px',
-                              borderRadius: 4,
-                              border: '1px solid #ccc',
-                              backgroundColor: order.status === 'pending' ? '#fff3cd' :
-                                             order.status === 'confirmed' ? '#d1ecf1' :
-                                             order.status === 'shipped' ? '#d4edda' :
-                                             order.status === 'delivered' ? '#c3e6cb' : '#f8d7da',
-                              color: order.status === 'pending' ? '#856404' :
-                                     order.status === 'confirmed' ? '#0c5460' :
-                                     order.status === 'shipped' ? '#155724' :
-                                     order.status === 'delivered' ? '#155724' : '#721c24'
-                            }}
-                          >
-                            <option value="pending">Pendente</option>
-                            <option value="confirmed">Confirmado</option>
-                            <option value="shipped">Enviado</option>
-                            <option value="delivered">Entregue</option>
-                            <option value="cancelled">Cancelado</option>
-                          </select>
-                        </div>
+                            } catch (err) {
+                              console.error("Erro na requisição de status:", err);
+                              alert("Erro na comunicação com o servidor.");
+                            }
+                          }}
+                          style={{
+                            padding: "5px 10px",
+                            borderRadius: 4,
+                            border: "1px solid #ccc",
+                            backgroundColor:
+                              order.status === "pending"
+                                ? "#fff3cd"
+                                : order.status === "confirmed"
+                                ? "#d1ecf1"
+                                : order.status === "shipped"
+                                ? "#d4edda"
+                                : order.status === "delivered"
+                                ? "#c3e6cb"
+                                : "#f8d7da",
+                            color:
+                              order.status === "pending"
+                                ? "#856404"
+                                : order.status === "confirmed"
+                                ? "#0c5460"
+                                : order.status === "shipped"
+                                ? "#155724"
+                                : order.status === "delivered"
+                                ? "#155724"
+                                : "#721c24",
+                          }}
+                        >
+                          <option value="pending">Pendente</option>
+                          <option value="confirmed">Confirmado</option>
+                          <option value="shipped">Enviado</option>
+                          <option value="delivered">Entregue</option>
+                          <option value="cancelled">Cancelado</option>
+                        </select>
                       </div>
                     </div>
 
                     <div style={{ marginBottom: 15 }}>
-                      <h4 style={{ margin: '0 0 10px 0', color: '#333' }}>Cliente</h4>
-                      <p style={{ margin: 0 }}><strong>{order.user.name}</strong></p>
-                      <p style={{ margin: 0, color: '#666' }}>{order.user.email}</p>
+                      <h4 style={{ margin: "0 0 10px 0", color: "#333" }}>
+                        Cliente
+                      </h4>
+                      <p style={{ margin: 0 }}>
+                        <strong>{order.user.name}</strong>
+                      </p>
+                      <p style={{ margin: 0, color: "#666" }}>{order.user.email}</p>
                     </div>
 
                     <div style={{ marginBottom: 15 }}>
-                      <h4 style={{ margin: '0 0 10px 0', color: '#333' }}>Endereço de Entrega</h4>
+                      <h4 style={{ margin: "0 0 10px 0", color: "#333" }}>
+                        Endereço de Entrega
+                      </h4>
                       <p style={{ margin: 0 }}>
-                        {order.deliveryAddress.address}, {order.deliveryAddress.number}<br />
+                        {order.deliveryAddress.address},{" "}
+                        {order.deliveryAddress.number}
+                        <br />
                         CEP: {order.deliveryAddress.cep}
                       </p>
                     </div>
 
                     <div>
-                      <h4 style={{ margin: '0 0 10px 0', color: '#333' }}>Itens do Pedido</h4>
-                      <div style={{ backgroundColor: '#f8f9fa', padding: 15, borderRadius: 6 }}>
+                      <h4 style={{ margin: "0 0 10px 0", color: "#333" }}>
+                        Itens do Pedido
+                      </h4>
+                      <div
+                        style={{
+                          backgroundColor: "#f8f9fa",
+                          padding: 15,
+                          borderRadius: 6,
+                        }}
+                      >
                         {order.items.map((item, i) => (
-                          <div key={i} style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            padding: '8px 0',
-                            borderBottom: i < order.items.length - 1 ? '1px solid #eee' : 'none'
-                          }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <div
+                            key={i}
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                              padding: "8px 0",
+                              borderBottom:
+                                i < order.items.length - 1
+                                  ? "1px solid #eee"
+                                  : "none",
+                            }}
+                          >
+                            <div
+                              style={{ display: "flex", alignItems: "center", gap: 10 }}
+                            >
                               <img
-                                src={item.image || `https://picsum.photos/40?random=${item.product}`}
+                                src={
+                                  item.image ||
+                                  `https://picsum.photos/40?random=${item.product}`
+                                }
                                 alt={item.name}
-                                style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }}
+                                style={{
+                                  width: 40,
+                                  height: 40,
+                                  objectFit: "cover",
+                                  borderRadius: 4,
+                                }}
                               />
                               <div>
-                                <div style={{ fontWeight: 'bold' }}>{item.name}</div>
-                                <div style={{ fontSize: '0.9em', color: '#666' }}>
+                                <div style={{ fontWeight: "bold" }}>{item.name}</div>
+                                <div style={{ fontSize: "0.9em", color: "#666" }}>
                                   {item.qty} x R$ {item.price.toFixed(2)}
                                 </div>
                               </div>
                             </div>
-                            <div style={{ fontWeight: 'bold' }}>
+
+                            <div style={{ fontWeight: "bold" }}>
                               R$ {(item.price * item.qty).toFixed(2)}
                             </div>
                           </div>
@@ -922,8 +1048,15 @@ const handleUpdateProduct = async (e) => {
 
                 <h3>{p.name}</h3>
                 <p>{p.description}</p>
-                <p className="price">
-                  R$ {Number(p.price).toFixed(2)}
+                <p className="price">R$ {Number(p.price).toFixed(2)}</p>
+                <p>
+                  Estoque: <strong>{p.quantity ?? 0}</strong>
+                </p>
+                <p>
+                  Status:{" "}
+                  <strong style={{ color: p.active === false ? "red" : "green" }}>
+                    {p.active === false ? "Inativo" : "Ativo"}
+                  </strong>
                 </p>
                 <p className={p.inStock ? "in-stock" : "out-stock"}>
                   {p.inStock ? "Em estoque ✅" : "Fora de estoque ❌"}
