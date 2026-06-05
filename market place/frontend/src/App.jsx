@@ -99,14 +99,16 @@ function App() {
         setProducts([data, ...products]);
 
         setNewProduct({
-          name: "",
-          description: "",
-          price: 0,
-          inStock: true,
-          category: "Hortaliças",
-          images: [],
-          previews: [],
-        });
+      name: "",
+      description: "",
+      price: 0,
+      inStock: true,
+      category: "Hortaliças",
+      quantity: 0,
+      active: true,
+      images: [],
+      previews: [],
+      });
 
         setShowCreateForm(false);
         alert("Produto criado!");
@@ -481,6 +483,22 @@ const handleUpdateProduct = async (e) => {
               />
 
               <label>Preço</label>
+
+              <label>Preço</label>
+<input
+  type="number"
+  value={newProduct.price}
+  onChange={(e) =>
+    setNewProduct({
+      ...newProduct,
+      price: parseFloat(e.target.value),
+    })
+  }
+  min="0"
+  step="0.01"
+  required
+/>
+              
               <input
                 type="number"
                 value={editingProduct.price}
