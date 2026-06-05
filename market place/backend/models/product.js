@@ -5,13 +5,22 @@ const productSchema = new mongoose.Schema({
   description: { type: String, default: "" },
   price: { type: Number, required: true, min: 0 },
 
-  // ⭐ AGORA SUPORTA VÁRIAS IMAGENS
   images: [{ type: String }],
-
-  // ⭐ IMAGEM PRINCIPAL
   mainImage: { type: String, default: "" },
 
   inStock: { type: Boolean, default: true },
+
+  quantity: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
+
+  active: {
+    type: Boolean,
+    default: true,
+  },
+
   category: { type: String, default: "Hortaliças" },
   createdAt: { type: Date, default: Date.now },
 });
