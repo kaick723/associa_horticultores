@@ -96,6 +96,10 @@ app.post("/products", upload.array("images", 5), async (req, res) => {
       description: req.body.description,
       price: Number(req.body.price),
       category: req.body.category,
+
+      quantity: Number(req.body.quantity) || 0,
+      active: req.body.active === "false" ? false : true,
+      
       inStock:
         req.body.inStock === "true" ||
         req.body.inStock === true,
