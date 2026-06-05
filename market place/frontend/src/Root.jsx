@@ -14,6 +14,7 @@ import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import Footer from './components/Footer';
 import MyOrders from './pages/MyOrders';
+import ScrollToTop from "./components/ScrollToTop";
 
 export default function Root() {
   const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user') || 'null'));
@@ -60,6 +61,7 @@ useEffect(() => {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <header style={{ background: "#2f4f2f", padding: 10 }}>
           <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", gap: 12 }}>
           <Link to="/" style={{ color: "white", textDecoration: "none", fontWeight: 700, fontSize: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
