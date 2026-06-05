@@ -197,6 +197,17 @@ app.put("/products/:id", upload.array("images", 5), async (req, res) => {
     product.category =
       req.body.category ?? product.category;
 
+  product.quantity =
+  req.body.quantity !== undefined
+    ? Number(req.body.quantity)
+    : product.quantity;
+
+if (req.body.active !== undefined) {
+  product.active =
+    req.body.active === "true" ||
+    req.body.active === true;
+}
+    
     if (req.body.inStock !== undefined) {
       product.inStock =
         req.body.inStock === "true" ||
