@@ -4,40 +4,33 @@ const cors = require("cors");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 require("dotenv").config();
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-require("./db"); // conecta ao MongoDB
+
+require("./db");
 
 const Product = require("./models/product");
 const adminRoutes = require("./routes/admin");
 const usersRoutes = require("./routes/users");
 const authRoutes = require("./routes/auth");
 
-// ------------------- Configuração ------------------- //
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 🔥 URL BASE DO SERVIDOR
-const BASE_URL =
-  process.env.BASE_URL ||
-  `http://localhost:${PORT}`;
-
-// 🔥 CORS
 app.use(cors());
-
 app.use(express.json());
 
 // ================== MULTER ==================
 const storage = multer.memoryStorage();
+
 const uploadToCloudinary = (fileBuffer) => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
-      {
-        folder: "horticultores",
-      },
+      { folder: "horticultores" },
       (error, result) => {
         if (error) reject(error);
         else resolve(result.secure_url);
@@ -48,25 +41,18 @@ const uploadToCloudinary = (fileBuffer) => {
   });
 };
 
-
-// ✅ filtro de imagem
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image/")) {
-    cb(null, true);
-  } else {
-    cb(new Error("Apenas imagens são permitidas"), false);
-  }
+  if (file.mimetype.startsWith("image/")) cb(null, true);
+  else cb(new Error("Apenas imagens são permitidas"), false);
 };
 
 const upload = multer({
   storage,
   fileFilter,
-
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB
+    fileSize: 5 * 1024 * 1024,
   },
 });
-
 
 // ------------------- Rota raiz ------------------- //
 app.get("/", (req, res) => {
@@ -78,18 +64,16 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/auth", authRoutes);
 
-// ================== CRUD DE PRODUTOS ================== //
+// ================== PRODUTOS ================== //
 
 // ✅ CRIAR PRODUTO
 app.post("/products", upload.array("images", 5), async (req, res) => {
   try {
     const imagePaths = req.files?.length
-  ? await Promise.all(
-      req.files.map((file) =>
-        uploadToCloudinary(file.buffer)
-      )
-    )
-  : [];
+      ? await Promise.all(
+          req.files.map((file) => uploadToCloudinary(file.buffer))
+        )
+      : [];
 
     const product = new Product({
       name: req.body.name,
@@ -99,7 +83,7 @@ app.post("/products", upload.array("images", 5), async (req, res) => {
 
       quantity: Number(req.body.quantity) || 0,
       active: req.body.active === "false" ? false : true,
-      
+
       inStock:
         req.body.inStock === "true" ||
         req.body.inStock === true,
@@ -113,25 +97,29 @@ app.post("/products", upload.array("images", 5), async (req, res) => {
     res.status(201).json(product);
   } catch (err) {
     console.error(err);
-
-    res.status(400).json({
-      error: err.message,
-    });
+    res.status(400).json({ error: err.message });
   }
 });
 
-// ✅ LISTAR TODOS
+// ✅ LISTAR PRODUTOS
 app.get("/products", async (req, res) => {
   try {
-    const products = await Product.find().sort({
+    const isAdmin = req.query.admin === "true";
+
+    const filter = isAdmin
+      ? {}
+      : {
+          active: true,
+          quantity: { $gt: 0 },
+        };
+
+    const products = await Product.find(filter).sort({
       createdAt: -1,
     });
 
     res.json(products);
   } catch (err) {
-    res.status(500).json({
-      error: err.message,
-    });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -148,9 +136,7 @@ app.get("/products/:id", async (req, res) => {
 
     res.json(product);
   } catch (err) {
-    res.status(500).json({
-      error: err.message,
-    });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -165,49 +151,43 @@ app.put("/products/:id", upload.array("images", 5), async (req, res) => {
       });
     }
 
-    // ================== NOVAS IMAGENS ==================
     let newImages = product.images || [];
 
     if (req.body.imagesToKeep) {
-  newImages = Array.isArray(req.body.imagesToKeep)
-    ? req.body.imagesToKeep
-    : [req.body.imagesToKeep];
-}
-    
+      newImages = Array.isArray(req.body.imagesToKeep)
+        ? req.body.imagesToKeep
+        : [req.body.imagesToKeep];
+    }
+
     if (req.files && req.files.length > 0) {
       const uploadedImages = await Promise.all(
-  req.files.map((file) =>
-    uploadToCloudinary(file.buffer)
-  )
-);
+        req.files.map((file) => uploadToCloudinary(file.buffer))
+      );
 
       newImages = [...newImages, ...uploadedImages];
     }
 
-    // ================== ATUALIZA CAMPOS ==================
     product.name = req.body.name ?? product.name;
+    product.description = req.body.description ?? product.description;
 
-    product.description =
-      req.body.description ?? product.description;
+    product.price =
+      req.body.price !== undefined
+        ? Number(req.body.price)
+        : product.price;
 
-    product.price = req.body.price
-      ? Number(req.body.price)
-      : product.price;
+    product.category = req.body.category ?? product.category;
 
-    product.category =
-      req.body.category ?? product.category;
+    product.quantity =
+      req.body.quantity !== undefined
+        ? Number(req.body.quantity)
+        : product.quantity;
 
-  product.quantity =
-  req.body.quantity !== undefined
-    ? Number(req.body.quantity)
-    : product.quantity;
+    if (req.body.active !== undefined) {
+      product.active =
+        req.body.active === "true" ||
+        req.body.active === true;
+    }
 
-if (req.body.active !== undefined) {
-  product.active =
-    req.body.active === "true" ||
-    req.body.active === true;
-}
-    
     if (req.body.inStock !== undefined) {
       product.inStock =
         req.body.inStock === "true" ||
@@ -215,7 +195,6 @@ if (req.body.active !== undefined) {
     }
 
     product.images = newImages;
-
     product.mainImage = newImages[0] || "";
 
     await product.save();
@@ -223,19 +202,14 @@ if (req.body.active !== undefined) {
     res.json(product);
   } catch (err) {
     console.error(err);
-
-    res.status(400).json({
-      error: err.message,
-    });
+    res.status(400).json({ error: err.message });
   }
 });
 
-// ✅ DELETAR
+// ✅ DELETAR PRODUTO
 app.delete("/products/:id", async (req, res) => {
   try {
-    const product = await Product.findByIdAndDelete(
-      req.params.id
-    );
+    const product = await Product.findByIdAndDelete(req.params.id);
 
     if (!product) {
       return res.status(404).json({
@@ -243,13 +217,9 @@ app.delete("/products/:id", async (req, res) => {
       });
     }
 
-    res.json({
-      message: "Produto deletado",
-    });
+    res.json({ message: "Produto deletado" });
   } catch (err) {
-    res.status(500).json({
-      error: err.message,
-    });
+    res.status(500).json({ error: err.message });
   }
 });
 
